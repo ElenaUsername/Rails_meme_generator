@@ -15,7 +15,7 @@ end
 RSpec.describe Caption, type: :model do
   context 'caption validation' do
     it 'is valid with valid attributes' do
-      test_caption_validation(url: 'https://example.com/image.jpg', text: 'Acesta este un test valid', expected_result_eq: true)
+      test_caption_validation(url: 'https://example.com/image.jpg', text: 'This is a valid test', expected_result_eq: true)
     end
 
     it 'is invalid without a url' do
