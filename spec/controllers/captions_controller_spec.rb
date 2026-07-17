@@ -9,7 +9,7 @@ RSpec.describe "Captions API", type: :request do
         post "/captions", params: {
           caption: {
             url: "https://example.com/meme.jpg",
-            text: "Când codul compilează din prima",
+            text: "When the code compiles on the first try",
             kind: "simple"
           }
         }.to_json, headers: headers
@@ -23,7 +23,7 @@ RSpec.describe "Captions API", type: :request do
       it "returns 400 Bad Request" do
         post "/captions", params: {
           url: "https://example.com/meme.jpg",
-          text: "Acest request va eșua"
+          text: "This request will fail"
         }.to_json, headers: headers
 
         expect(response).to have_http_status(:bad_request)

@@ -16,7 +16,7 @@ class CaptionsController < ApplicationController
 
   def caption_params
     params.require(:caption).permit(
-      :url, :text, :kind, :type_field, :color, 
+      :url, :text, :kind, :type_field, :color,
       :start_color, :end_color, :filter, :unique_name
     )
   end

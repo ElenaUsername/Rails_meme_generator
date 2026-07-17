@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-def test_caption_validation(url: url,text: text,expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, kind: kind = 'simple')
+def test_caption_validation(url: url, text: text, expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, kind: kind = 'simple')
   caption = Caption.new(url: url, text: text, kind: kind)
   expect(caption.valid?).to eq(expected_result_eq)
   expect(caption.errors[error_key]).to include(expected_result_include) if expected_result_include.present?
@@ -13,7 +13,6 @@ def test_caption_with_unique_name(url: url, text: text, unique_name: unique_name
 end
 
 RSpec.describe Caption, type: :model do
-
   context 'caption validation' do
     it 'is valid with valid attributes' do
       test_caption_validation(url: 'https://example.com/image.jpg', text: 'Acesta este un test valid', expected_result_eq: true)
@@ -54,4 +53,3 @@ RSpec.describe Caption, type: :model do
     end
   end
 end
-      

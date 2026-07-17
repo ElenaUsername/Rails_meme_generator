@@ -1,5 +1,4 @@
 class Caption < ApplicationRecord
-
   validates :url, presence: true
   validates :text, presence: true, length: { maximum: 266 }
   validate :url_points_to_valid_image_type
