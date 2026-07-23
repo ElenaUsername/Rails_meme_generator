@@ -6,9 +6,13 @@ class CaptionsController < ApplicationController
     @caption = Caption.new(caption_params)
 
     if @caption.save
-      render json: @caption, status: :created
+      render json: @caption, status: 201
     else
-      render json: { errors: @caption.errors.full_messages }, status: :unprocessable_entity
+      error_response(
+        "invalid_parameters", 
+        "Unprocessable Entity", 
+        @caption.errors.full_messages.join(", "), 
+        422)
     end
   end
 
@@ -22,6 +26,12 @@ class CaptionsController < ApplicationController
   end
 
   def handle_parameter_missing(exception)
-    render json: { error: "Bad Request: #{exception.message}" }, status: :bad_request
+    error_response(
+      "missing_parameter",
+      "Bad Request",
+      exception.message,
+      400
+    )
   end
+
 end

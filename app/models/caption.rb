@@ -12,9 +12,7 @@ class Caption < ApplicationRecord
 
     is_valid_web_url = uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
 
-    unless is_valid_web_url
-      errors.add(:url, "is not a valid URL")
-    end
+    errors.add(:url, "is not a valid URL") unless is_valid_web_url
 
     valid_extensions = %w[.jpg .jpeg .png .gif .webp]
     file_extension = File.extname(uri.path).downcase
