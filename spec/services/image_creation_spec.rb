@@ -25,23 +25,21 @@ RSpec.describe ImageCreation do
   end
 
   describe "#call" do
-    context "when verifying " do
-      it "returns the public image path" do
-        expect(service.call).to eq("/images/sample-caption-123.png")
-      end
-
-      it "adds text annotations to the image" do
-        expect(image).to receive(:combine_options)
-        service.call
-      end
-
-      it "writes the image file to public/images" do
-        expected_path = Rails.root.join("public", "images", "sample-caption-123.png").to_s
-        expect(image).to receive(:write).with(expected_path)
-        service.call
-      end
+    it "returns the public image path" do
+      expect(service.call).to eq("/images/sample-caption-123.png")
     end
-  
+
+    it "adds text annotations to the image" do
+      expect(image).to receive(:combine_options)
+      service.call
+    end
+
+    it "writes the image file to public/images" do
+      expected_path = Rails.root.join("public", "images", "sample-caption-123.png").to_s
+      expect(image).to receive(:write).with(expected_path)
+      service.call
+    end
+
     context "when the caption URL has no file extension" do
       let(:caption_url) { "https://example.com/image_without_ext" }
       let(:caption_name) { "no-extension-123" }

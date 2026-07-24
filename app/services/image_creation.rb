@@ -1,5 +1,6 @@
 require "open-uri"
 require "mini_magick"
+require "fileutils"
 
 class ImageCreation
   class DownloadError < StandardError; end
@@ -31,11 +32,11 @@ class ImageCreation
 
   def add_text_to(image)
     image.combine_options do |config|
-      config.font 'Arial'
+      config.font "Arial"
       config.pointsize(DEFAULT_SIZE)
-      config.gravity 'Center'
-      config.fill 'white'
-      config.stroke 'black'
+      config.gravity "Center"
+      config.fill "white"
+      config.stroke "black"
       config.strokewidth 2
       config.annotate "+0+20", caption.text
     end
@@ -57,7 +58,9 @@ class ImageCreation
   end
 
   def file_extension
-    ext = File.extname(caption.url).downcase
-    ext.presence || ".jpg"
+    extension = File.extname(URI.parse(caption.url).path).downcase
+    extension.present? ? extension : ".jpg"
+  rescue URI::InvalidURIError
+    ".jpg"
   end
 end

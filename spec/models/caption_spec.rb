@@ -51,5 +51,14 @@ RSpec.describe Caption, type: :model do
     it 'is invalid with a completely broken/malformed URL' do
       test_caption_with_unique_name(url: 'not-a-valid-url', text: 'Invalid test', unique_name: 'unique_name_3', expected_result_eq: false, expected_result_include: "is not a valid URL", error_key: :url)
     end
+
+    it 'is valid with an image URL that has query parameters and no extension' do
+      test_caption_with_unique_name(
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Pok87YcbWNcbOs5tMkvEpwuH7Y49rYluWBDb0FAGqQ&s=10',
+        text: 'Valid query-string image',
+        unique_name: 'unique_name_4',
+        expected_result_eq: true
+      )
+    end
   end
 end

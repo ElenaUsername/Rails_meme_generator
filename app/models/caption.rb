@@ -1,6 +1,7 @@
 class Caption < ApplicationRecord
   validates :url, presence: true
   validates :text, presence: true, length: { maximum: 266 }
+  validate :url_is_valid
   validate :url_points_to_valid_image_type
 
   before_validation :generate_unique_name, on: :create
@@ -8,24 +9,33 @@ class Caption < ApplicationRecord
 
   private
 
-  def url_points_to_valid_image_type
+  def url_is_valid
     return if url.blank?
 
     uri = URI.parse(url)
 
-    is_valid_web_url = uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
-
-    errors.add(:url, "is not a valid URL") unless is_valid_web_url
-
-    valid_extensions = %w[.jpg .jpeg .png .gif .webp]
-    file_extension = File.extname(uri.path).downcase
-
-    unless valid_extensions.include?(file_extension)
-      errors.add(:url, "must point to a valid image (jpg, jpeg, png, gif, webp)")
+    unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+      errors.add(:url, "is not a valid URL")
     end
-
   rescue URI::InvalidURIError
     errors.add(:url, "is not a valid URL")
+  end
+
+  def url_points_to_valid_image_type
+    return if url.blank?
+
+    uri = URI.parse(url)
+    return unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+
+    extension = File.extname(uri.path).downcase
+    return if extension.blank?
+
+    valid_extensions = %w[.jpg .jpeg .png .gif .webp]
+    unless valid_extensions.include?(extension)
+      errors.add(:url, "must point to a valid image (jpg, jpeg, png, gif, webp)")
+    end
+  rescue URI::InvalidURIError
+    # url_is_valid will handle invalid URLs
   end
 
   def generate_unique_name
