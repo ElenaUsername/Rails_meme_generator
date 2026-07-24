@@ -9,9 +9,9 @@ class CaptionsController < ApplicationController
       render json: @caption, status: 201
     else
       error_response(
-        "invalid_parameters", 
-        "Unprocessable Entity", 
-        @caption.errors.full_messages.join(", "), 
+        "invalid_parameters",
+        "Unprocessable Entity",
+        @caption.errors.full_messages.join(", "),
         422)
     end
   end
@@ -33,5 +33,4 @@ class CaptionsController < ApplicationController
       400
     )
   end
-
 end
