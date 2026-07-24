@@ -1,0 +1,63 @@
+require "open-uri"
+require "mini_magick"
+
+class ImageCreation
+  class DownloadError < StandardError; end
+
+  def initialize(caption)
+    @caption = caption
+  end
+
+  DEFAULT_SIZE = 64
+
+  def call
+    image = download_image
+
+    add_text_to(image)
+    save_image(image)
+
+    "/images/#{filename}"
+  end
+
+  private
+
+  attr_reader :caption
+
+  def download_image
+    MiniMagick::Image.open(caption.url)
+  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT => error
+    raise DownloadError, "Could not download image from #{caption.url}: #{error.message}"
+  end
+
+  def add_text_to(image)
+    image.combine_options do |config|
+      config.font 'Arial'
+      config.pointsize(DEFAULT_SIZE)
+      config.gravity 'Center'
+      config.fill 'white'
+      config.stroke 'black'
+      config.strokewidth 2
+      config.annotate "+0+20", caption.text
+    end
+  end
+
+  def save_image(image)
+    unless Dir.exist?(output_directory)
+      FileUtils.mkdir_p(output_directory)
+    end
+    image.write(output_directory.join(filename).to_s)
+  end
+
+  def output_directory
+    Rails.root.join("public", "images")
+  end
+
+  def filename
+    "#{caption.unique_name}#{file_extension}"
+  end
+
+  def file_extension
+    ext = File.extname(caption.url).downcase
+    ext.presence || ".jpg"
+  end
+end

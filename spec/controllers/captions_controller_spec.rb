@@ -4,7 +4,7 @@ RSpec.describe "Captions API", type: :request do
   let(:headers) { { "CONTENT_TYPE" => "application/json" } }
 
   describe "POST /captions" do
-    context "when the request is valid" do
+    context "The request is valid" do
       it "creates a new caption and returns 201 Created" do
         post "/captions", params: {
           caption: {
@@ -19,19 +19,19 @@ RSpec.describe "Captions API", type: :request do
       end
     end
 
-    context "when the root 'caption' parameter is missing" do
-      it "returns 400 Bad Request" do
+    context "The root 'caption' parameter is missing" do
+      it "Bad Request(400)" do
         post "/captions", params: {
           url: "https://example.com/meme.jpg",
           text: "This request will fail"
         }.to_json, headers: headers
 
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(400)
       end
     end
 
-    context "when parameters are present but invalid" do
-      it "returns 422 Unprocessable Entity" do
+    context "The parameters are present but invalid" do
+      it "Unprocessable Entity(422)" do
         post "/captions", params: {
           caption: {
             url: "https://example.com/not-an-image.pdf",
@@ -39,7 +39,7 @@ RSpec.describe "Captions API", type: :request do
           }
         }.to_json, headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(422)
       end
     end
   end

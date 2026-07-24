@@ -3,6 +3,9 @@ class Caption < ApplicationRecord
   validates :text, presence: true, length: { maximum: 266 }
   validate :url_points_to_valid_image_type
 
+  before_validation :generate_unique_name, on: :create
+  validates :unique_name, presence: true, uniqueness: true
+
   private
 
   def url_points_to_valid_image_type
@@ -23,5 +26,17 @@ class Caption < ApplicationRecord
 
   rescue URI::InvalidURIError
     errors.add(:url, "is not a valid URL")
+  end
+
+  def generate_unique_name
+    return if unique_name.present?
+
+    loop do
+      candidate = "meme_#{Date.current.strftime('%Y%m%d')}_#{SecureRandom.hex(4)}"
+      unless Caption.exists?(unique_name: candidate)
+        self.unique_name = candidate
+        break
+      end
+    end
   end
 end
