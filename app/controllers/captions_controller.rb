@@ -14,6 +14,26 @@ class CaptionsController < ApplicationController
   end
 
   def create
+    create_caption
+  end
+
+  def create_instagram
+    create_caption
+  end
+
+  def show_instagram
+    render json: { message: "Instagram endpoint is available" }, status: 200
+  end
+
+  def destroy
+    delete_generated_image if @caption.caption_url.present?
+    @caption.destroy
+    head :ok
+  end
+
+  private
+
+  def create_caption
     @caption = Caption.new(caption_params)
 
     if @caption.save
@@ -24,6 +44,9 @@ class CaptionsController < ApplicationController
       rescue ImageCreation::DownloadError => e
         @caption.destroy
         error_response("invalid_url", "Unprocessable Entity", e.message, 422)
+      rescue StandardError => e
+        @caption.destroy
+        error_response("image_creation_failed", "Unprocessable Entity", e.message, 422)
       end
     else
       error_response(
@@ -34,17 +57,17 @@ class CaptionsController < ApplicationController
     end
   end
 
-  def destroy
-    if @caption.caption_url.present?
-      path = Rails.root.join("public", @caption.caption_url.split("/images/").last.prepend("images/"))
-      FileUtils.rm_f(path)
-    end
+  def delete_generated_image
+    parsed_url = URI.parse(@caption.caption_url)
+    return unless parsed_url.path.include?("/images/")
 
-    @caption.destroy
-    head :ok
+    path = parsed_url.path.split("/images/").last
+    return if path.blank?
+
+    FileUtils.rm_f(Rails.root.join("public", "images", path))
+  rescue URI::InvalidURIError
+    nil
   end
-
-  private
 
   def set_caption
     @caption = Caption.find(params[:id])
@@ -63,7 +86,7 @@ class CaptionsController < ApplicationController
 
   def caption_params
     params.require(:caption).permit(
-      :url, :text, :kind, :type_field, :color,
+      :url, :text, :type_field, :color,
       :start_color, :end_color, :filter, :unique_name
     )
   end

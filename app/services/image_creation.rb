@@ -26,8 +26,10 @@ class ImageCreation
 
   def download_image
     MiniMagick::Image.open(caption.url)
-  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT => error
+  rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, URI::InvalidURIError => error
     raise DownloadError, "Could not download image from #{caption.url}: #{error.message}"
+  rescue MiniMagick::Error, StandardError => error
+    raise DownloadError, "Failed to process image from #{caption.url}: #{error.message}"
   end
 
   def add_text_to(image)
@@ -43,10 +45,10 @@ class ImageCreation
   end
 
   def save_image(image)
-    unless Dir.exist?(output_directory)
-      FileUtils.mkdir_p(output_directory)
-    end
+    FileUtils.mkdir_p(output_directory) unless Dir.exist?(output_directory)
     image.write(output_directory.join(filename).to_s)
+  rescue StandardError => error
+    raise DownloadError, "Failed to save image: #{error.message}"
   end
 
   def output_directory

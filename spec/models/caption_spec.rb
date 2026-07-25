@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-def test_caption_validation(url: url, text: text, expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, kind: kind = 'simple')
-  caption = Caption.new(url: url, text: text, kind: kind)
+def test_caption_validation(url: url, text: text, expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, type_field: type_field = 'simple')
+  caption = Caption.new(url: url, text: text, type_field: type_field)
   expect(caption.valid?).to eq(expected_result_eq)
   expect(caption.errors[error_key]).to include(expected_result_include) if expected_result_include.present?
 end
 
-def test_caption_with_unique_name(url: url, text: text, unique_name: unique_name, expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, kind: kind = 'simple')
-  caption = Caption.new(url: url, text: text, unique_name: unique_name, kind: kind)
+def test_caption_with_unique_name(url: url, text: text, unique_name: unique_name, expected_result_eq: expected_result_eq, expected_result_include: expected_result_include = nil, error_key: error_key = :text, type_field: type_field = 'simple')
+  caption = Caption.new(url: url, text: text, unique_name: unique_name, type_field: type_field)
   expect(caption.valid?).to eq(expected_result_eq)
   expect(caption.errors[error_key]).to include(expected_result_include) if expected_result_include.present?
 end
