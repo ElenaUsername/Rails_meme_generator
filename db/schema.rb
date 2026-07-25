@@ -17,7 +17,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_24_151211) do
     t.datetime "created_at", null: false
     t.string "end_color"
     t.string "filter"
-    t.string "kind"
     t.string "start_color"
     t.string "text"
     t.string "type_field"

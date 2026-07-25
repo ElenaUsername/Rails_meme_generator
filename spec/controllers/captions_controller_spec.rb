@@ -37,13 +37,33 @@ RSpec.describe "Captions API", type: :request do
         caption: {
           url: "https://example.com/meme.jpg",
           text: "Instagram-ready meme",
-          type_field: "simple"
+          type_field: "image"
         }
       }.to_json, headers: headers
 
       expect(response).to have_http_status(201)
       expect(Caption.count).to eq(1)
-      expect(Caption.last.type_field).to eq("simple")
+      expect(Caption.last.type_field).to eq("image")
+    end
+
+    it "creates a new caption with color and returns 201 Created" do
+      fake_image = instance_double(MiniMagick::Image)
+      allow(MiniMagick::Image).to receive(:open).and_return(fake_image)
+      allow(fake_image).to receive(:combine_options)
+      allow(fake_image).to receive(:write)
+
+      post "/captions/instagram", params: {
+        caption: {
+          color: "#003166",
+          text: "caption text",
+          type_field: "color"
+        }
+      }.to_json, headers: headers
+
+      puts response.body
+      expect(response).to have_http_status(201)
+      expect(Caption.count).to eq(1)
+      expect(Caption.last.type_field).to eq("color")
     end
   end
 

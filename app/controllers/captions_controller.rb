@@ -1,3 +1,5 @@
+require 'pry'
+
 class CaptionsController < ApplicationController
   wrap_parameters false
   rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
@@ -38,6 +40,7 @@ class CaptionsController < ApplicationController
 
     if @caption.save
       begin
+       
         relative_path = ImageCreation.new(@caption).call
         @caption.update!(caption_url: "#{request.base_url}#{relative_path}")
         render json: serialize(@caption), status: 201

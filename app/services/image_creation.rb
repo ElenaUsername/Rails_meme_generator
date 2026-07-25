@@ -9,12 +9,11 @@ class ImageCreation
     @caption = caption
   end
 
-  DEFAULT_SIZE = 64
+  DEFAULT_SIZE = 36
 
   def call
-    image = download_image
+    image = build_base_image
 
-    add_text_to(image)
     save_image(image)
 
     "/images/#{filename}"
@@ -24,15 +23,62 @@ class ImageCreation
 
   attr_reader :caption
 
+  def build_base_image
+    
+    case caption.type_field
+    when "color"
+      generate_color_background(caption.color)
+    when "gradient"
+      generate_gradient_background(caption.start_color, caption.end_color, caption.text)
+    else
+      download_image
+    end
+  end
+
   def download_image
-    MiniMagick::Image.open(caption.url)
+    image =MiniMagick::Image.open(caption.url)
   rescue OpenURI::HTTPError, SocketError, Errno::ENOENT, URI::InvalidURIError => error
     raise DownloadError, "Could not download image from #{caption.url}: #{error.message}"
   rescue MiniMagick::Error, StandardError => error
     raise DownloadError, "Failed to process image from #{caption.url}: #{error.message}"
+    
+    add_text_to_image(image)
+    image
   end
 
-  def add_text_to(image)
+  def generate_gradient_background(start_color, end_color, text, output_path)
+    # image = MiniMagick.convert do |convert|
+    #     convert.size '600x400'
+    #     convert << "gradient:#{start_color}-#{end_color}"
+    #     convert.font "Arial"
+    #     convert.pointsize (DEFAULT_SIZE)
+    #     convert.gravity "Center"
+    #     convert.fill "white"
+    #     convert.stroke "black"
+    #     convert.strokewidth 2
+    #     convert.annotate "+0+20", caption.text
+    #     convert << filename
+    #   end
+  end
+
+  def generate_color_background(color)
+    MiniMagick::Tool::Convert.new do |convert|
+      convert.size "300x200"
+      convert.xc "#{color}"
+      # convert.font "Arial"
+      convert.pointsize (DEFAULT_SIZE)
+      convert.gravity "Center"
+      convert.fill "white"
+      convert.stroke "black"
+      convert.strokewidth 2
+      convert.annotate "+0+20", caption.text
+      # binding.pry
+      convert << filename
+      convert.output filename
+    end
+  end
+
+  def add_text_to_image(image)
     image.combine_options do |config|
       config.font "Arial"
       config.pointsize(DEFAULT_SIZE)

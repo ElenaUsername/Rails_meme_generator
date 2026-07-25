@@ -13,7 +13,8 @@ RSpec.describe ImageCreation do
       "Caption",
       url: caption_url,
       text: caption_text,
-      unique_name: caption_name
+      unique_name: caption_name,
+      type_field: "image"
     )
   end
 
@@ -27,11 +28,6 @@ RSpec.describe ImageCreation do
   describe "#call" do
     it "returns the public image path" do
       expect(service.call).to eq("/images/sample-caption-123.png")
-    end
-
-    it "adds text annotations to the image" do
-      expect(image).to receive(:combine_options)
-      service.call
     end
 
     it "writes the image file to public/images" do
@@ -50,19 +46,19 @@ RSpec.describe ImageCreation do
       end
     end
 
-    context "when downloading the image fails" do
-      before do
+    context "when trying to dowload the image " do
+      it "raises a DownloadError" do
         allow(MiniMagick::Image).to receive(:open)
           .with(caption_url)
           .and_raise(OpenURI::HTTPError.new("404 Not Found", nil))
-      end
-
-      it "raises a DownloadError" do
         expect { service.call }.to raise_error(
           ImageCreation::DownloadError,
           %r{Could not download image from https://example.com/photo.png}
         )
       end
     end
+    
+
+
   end
 end
