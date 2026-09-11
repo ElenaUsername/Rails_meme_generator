@@ -57,8 +57,5 @@ RSpec.describe ImageCreation do
         )
       end
     end
-    
-
-
   end
 end

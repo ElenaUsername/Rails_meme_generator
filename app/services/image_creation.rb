@@ -24,7 +24,6 @@ class ImageCreation
   attr_reader :caption
 
   def build_base_image
-    
     case caption.type_field
     when "color"
       generate_color_background(caption.color)
@@ -41,7 +40,7 @@ class ImageCreation
     raise DownloadError, "Could not download image from #{caption.url}: #{error.message}"
   rescue MiniMagick::Error, StandardError => error
     raise DownloadError, "Failed to process image from #{caption.url}: #{error.message}"
-    
+
     add_text_to_image(image)
     image
   end

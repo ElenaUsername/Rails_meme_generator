@@ -68,7 +68,6 @@ RSpec.describe "Captions API", type: :request do
   end
 
   describe "GET /captions" do
-
     context "The root 'caption' parameter is missing" do
       it "Bad Request(400)" do
         post "/captions", params: {
