@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_17_105446) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_24_151211) do
   create_table "captions", force: :cascade do |t|
     t.string "caption_url"
     t.string "color"
     t.datetime "created_at", null: false
     t.string "end_color"
     t.string "filter"
-    t.string "kind"
     t.string "start_color"
     t.string "text"
     t.string "type_field"

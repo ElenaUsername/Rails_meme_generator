@@ -21,6 +21,7 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 *:Zone.Identifier
+public/images/
 
 # Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*

@@ -1,14 +1,12 @@
 FactoryBot.define do
   factory :caption do
-    url { "MyString" }
+    url { "https://example.com/image.jpg" }
     text { "MyString" }
-    caption_url { "MyString" }
-    kind { "MyString" }
-    type_field { "MyString" }
-    color { "MyString" }
-    start_color { "MyString" }
-    end_color { "MyString" }
-    filter { "MyString" }
-    unique_name { "MyString" }
+    caption_url { nil }
+    type_field { "simple" }
+    color { nil }
+    start_color { nil }
+    end_color { nil }
+    filter { nil }
   end
 end

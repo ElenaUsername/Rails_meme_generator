@@ -8,5 +8,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :captions, only: [ :create ]
+  resources :captions, only: [ :index, :show, :create, :destroy ]
+  post "captions/instagram", to: "captions#create_instagram"
+  get "captions/instagram", to: "captions#show_instagram"
 end
